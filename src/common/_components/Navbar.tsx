@@ -8,10 +8,19 @@ import {
     SelectTrigger,
     SelectValue,
 } from "@/components/ui/select";
+import { Tenant, ResponseType } from "@/types";
 import { Phone, ShoppingBasket } from "lucide-react";
 import Link from "next/link";
 
-export default function Navbar() {
+export default async function Navbar() {
+    const response = await fetch(`${process.env.BACKEND_URL}/api/auth/tenants`, {
+        next: {
+            revalidate: 60 * 60, // 1 hour
+        },
+    });
+    if (!response.ok) throw new Error("Failed to fetch tenants");
+    const { data: restaurants }: ResponseType<Tenant> = await response.json();
+
     return (
         <header className=" ">
             <nav className=" py-4 container m-auto flex items-center justify-between ">
@@ -25,12 +34,12 @@ export default function Navbar() {
                         </SelectTrigger>
                         <SelectContent className="">
                             <SelectGroup className=" ">
-                                <SelectLabel>Fruits</SelectLabel>
-                                <SelectItem value="apple">Apple</SelectItem>
-                                <SelectItem value="banana">Banana</SelectItem>
-                                <SelectItem value="blueberry">Blueberry</SelectItem>
-                                <SelectItem value="grapes">Grapes</SelectItem>
-                                <SelectItem value="pineapple">Pineapple</SelectItem>
+                                <SelectLabel>Restaurants</SelectLabel>
+                                {restaurants?.map((tenant) => (
+                                    <SelectItem key={tenant.id} value={String(tenant.id)}>
+                                        {tenant.name}
+                                    </SelectItem>
+                                ))}
                             </SelectGroup>
                         </SelectContent>
                     </Select>

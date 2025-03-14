@@ -20,7 +20,7 @@ export default function ToppingBox({ product }: { product: Product }) {
                     <DialogTitle className="hidden">Are you absolutely sure?</DialogTitle>
                 </VisuallyHidden>
                 <div className="flex">
-                    <div className="w-1/3 flex items-center p-6 justify-center bg-white">
+                    <div className="w-1/3 flex items-center p-2 justify-center bg-white">
                         <Image src={product.image} width={400} height={400} alt="image" />
                     </div>
                     <div className="w-2/3 border p-8 bg-gray-50">

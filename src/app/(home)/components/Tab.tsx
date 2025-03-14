@@ -1,19 +1,25 @@
 import { TabsContent, TabsList, TabsTrigger, Tabs } from "@/components/ui/tabs";
+import { Category, ResponseType } from "@/types";
 import React from "react";
 
-export default function Tab() {
+export default async function Tab() {
+    const categoryResponse = await fetch(`${process.env.BACKEND_URL}/api/catalog/category`, {
+        next: {
+            revalidate: 60 * 60,
+        },
+    });
+    const { data: categoryData }: ResponseType<Category> = await categoryResponse.json();
+
     return (
-        <Tabs defaultValue="Pizza" className="w-[200px]  ">
+        <Tabs defaultValue={categoryData[0]._id} className="w-[200px]  ">
             <TabsList className="w-full ">
-                <TabsTrigger className="text-md" value="Pizza">
-                    Pizza
-                </TabsTrigger>
-                <TabsTrigger className="text-md" value="Bevrages">
-                    Bevrages
-                </TabsTrigger>
+                {categoryData.map((category) => (
+                    <TabsTrigger key={category._id} className="text-md" value={category._id}>
+                        {category.name}
+                    </TabsTrigger>
+                ))}
+                <TabsContent value="pizza">Make changes to your account here.</TabsContent>
             </TabsList>
-            <TabsContent value="Pizza">Make changes to your account here.</TabsContent>
-            <TabsContent value="Bevrages">Change your password here.</TabsContent>
         </Tabs>
     );
 }

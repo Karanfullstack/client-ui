@@ -70,7 +70,7 @@ export default function Home() {
             {/* tabs */}
             <section className="  bg-[#f5f5f5]  ">
                 <div className="container m-auto    ">
-                    <section className="flex  w-max ml-18  pl-3  items-center justify-between px-7 pt-7">
+                    <section className="flex w-max-full ml-26  pl-3  items-center justify-between px-7 pt-7">
                         <Tab />
                     </section>
 
