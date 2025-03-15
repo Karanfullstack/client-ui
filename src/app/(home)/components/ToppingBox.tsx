@@ -2,12 +2,12 @@ import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "@/components/
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import React from "react";
 import Image from "next/image";
-import { Product } from "./ProductCard";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import ToppingList from "./ToppingList";
 import { Button } from "@/components/ui/button";
 import { ShoppingBag } from "lucide-react";
+import { Product } from "@/types";
 
 export default function ToppingBox({ product }: { product: Product }) {
     return (
@@ -21,7 +21,7 @@ export default function ToppingBox({ product }: { product: Product }) {
                 </VisuallyHidden>
                 <div className="flex">
                     <div className="w-1/3 flex items-center p-2 justify-center bg-white">
-                        <Image src={product.image} width={400} height={400} alt="image" />
+                        <Image src={product.image.image} width={400} height={400} alt="image" />
                     </div>
                     <div className="w-2/3 border p-8 bg-gray-50">
                         <h3 className="text-xl font-medium">{product.name}</h3>

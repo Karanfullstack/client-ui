@@ -8,8 +8,10 @@ export default async function Tab() {
             revalidate: 60 * 60,
         },
     });
+    if (!categoryResponse.ok) {
+        throw new Error("category is not able to fetch");
+    }
     const { data: categoryData }: ResponseType<Category> = await categoryResponse.json();
-
     return (
         <Tabs defaultValue={categoryData[0]._id} className="w-[200px]  ">
             <TabsList className="w-full ">

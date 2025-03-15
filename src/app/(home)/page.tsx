@@ -1,50 +1,11 @@
 import Image from "next/image";
 import PizzaBanner from "../../app/../../assets/heor.png";
 import { Button } from "@/components/ui/button";
-import ProductCard, { Product } from "./components/ProductCard";
-import ProductImage from "@/../assets/Pepperoni-Traditional 1.png";
-import ProductImage1 from "@/../assets/Margherita-Traditional 1.png";
-import Tab from "./components/Tab";
+import ProductCard from "./components/ProductCard";
 
-const pizzaData: Product[] = [
-    {
-        name: "Margherita Magic",
-        description:
-            "Classic Margherita pizza with fresh mozzarella, basil, and rich tomato sauce.",
-        image: ProductImage,
-        price: "$9.99",
-    },
-    {
-        name: "Pepperoni Bliss",
-        description: "Delicious pepperoni pizza with a perfect balance of cheese and spice.",
-        image: ProductImage1,
-        price: "$12.99",
-    },
-    {
-        name: "BBQ Chicken Supreme",
-        description: "Smoky BBQ chicken pizza topped with red onions and mozzarella cheese.",
-        image: ProductImage,
-        price: "$14.99",
-    },
-    {
-        name: "Veggie Delight",
-        description: "Loaded with bell peppers, olives, onions, mushrooms, and mozzarella.",
-        image: ProductImage,
-        price: "$11.99",
-    },
-    {
-        name: "Meat Lover’s Feast",
-        description: "A hearty pizza loaded with pepperoni, sausage, bacon, and ham.",
-        image: ProductImage,
-        price: "$15.99",
-    },
-    {
-        name: "Hawaiian Paradise",
-        description: "Sweet and savory Hawaiian pizza with ham and pineapple.",
-        image: ProductImage,
-        price: "$13.99",
-    },
-];
+import Tab from "./components/Tab";
+import { Suspense } from "react";
+import { CardSkeleton } from "./components/CardSkeleton";
 
 export default function Home() {
     return (
@@ -74,11 +35,10 @@ export default function Home() {
                         <Tab />
                     </section>
 
-                    <div className="grid  w-max m-auto grid-cols-4 gap-y-6 gap-x-6 justify-items-center py-8      ">
-                        {pizzaData.map((product) => (
-                            <ProductCard product={product} key={product.name} />
-                        ))}
-                    </div>
+                    {/* product card render  */}
+                    <Suspense fallback={<CardSkeleton />}>
+                        <ProductCard />
+                    </Suspense>
                 </div>
             </section>
         </main>
