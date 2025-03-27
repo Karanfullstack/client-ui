@@ -1,47 +1,42 @@
 "use client";
-import React, { useState } from "react";
-import cheese from "@/app/../../assets/mushrooms 1.png";
-import jalapeno from "@/app/../../assets/jelapeno 1.png";
-import chicken from "@/app/../../assets/chicken 2.png";
+import React, { useEffect, useState } from "react";
 import Topping, { ToppingType } from "./Topping";
-const toppings = [
-    {
-        id: 1,
-        name: "Chicken",
-        image: cheese,
-        price: 12.99,
-        isAvailable: true,
-    },
-    {
-        id: 2,
-        name: "Jalapeno",
-        image: chicken,
-        price: 9.99,
-        isAvailable: false,
-    },
-    {
-        id: 3,
-        name: "Cheese",
-        image: jalapeno,
-        price: 8.49,
-        isAvailable: true,
-    },
-];
+import { ResponseType } from "@/types";
 
 export default function ToppingList() {
-    const [state, setState] = useState<ToppingType[]>([toppings[0]]);
+    const [toppings, setToppings] = useState<ToppingType[] | []>([]);
+    const [state, setState] = useState<ToppingType[] | []>([]);
+    // TODO: MAKE DYNMAIC TENANT ID
+    useEffect(() => {
+        const fetchToppings = async () => {
+            const data = await fetch(
+                `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/catalog/topping?tenantId=26`
+            );
+            const toppingResponse: ResponseType<ToppingType> = await data.json();
+            setToppings(toppingResponse.docs);
+            setState([toppingResponse.docs[0]]);
+        };
+        fetchToppings();
+    }, []);
+
+    console.log("stae...", state);
     const isSelected = (topping: ToppingType) => {
-        const is = state.some((item) => item.id === topping.id);
+        const is = state.some((item: ToppingType) => item._id === topping._id);
         if (is) {
-            setState((prev) => prev.filter((item) => item.id !== topping.id));
+            setState((prev) => prev.filter((item: ToppingType) => item._id !== topping._id));
         } else {
             setState((prev) => [...prev, topping]);
         }
     };
     return (
         <section className="flex justify-center gap-2 items-center">
-            {toppings.map((topping) => (
-                <Topping state={state} isSelected={isSelected} topping={topping} key={topping.id} />
+            {toppings?.map((topping) => (
+                <Topping
+                    state={state}
+                    isSelected={isSelected}
+                    topping={topping}
+                    key={topping._id}
+                />
             ))}
         </section>
     );

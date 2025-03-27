@@ -26,55 +26,32 @@ export default function ToppingBox({ product }: { product: Product }) {
                     <div className="w-2/3 border p-8 bg-gray-50">
                         <h3 className="text-xl font-medium">{product.name}</h3>
                         <p className="mt-2 font-normal text-sm">{product.description}</p>
-                        <h3 className="my-3 font-sm ">Choose Size</h3>
-                        <div>
-                            <RadioGroup className="grid mt-3 grid-cols-3 gap-3">
-                                <RadioGroupItem
-                                    aria-label="Small"
-                                    className="peer sr-only "
-                                    value="small"
-                                    id="small"
-                                />
-                                <Label
-                                    htmlFor={"small"}
-                                    className="flex  p-2 flex-col items-center justify-between rounded-md border-2 bg-white  hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary"
-                                >
-                                    Small
-                                </Label>
 
-                                <div>
-                                    <RadioGroupItem
-                                        aria-label="Medium"
-                                        className="peer sr-only"
-                                        value="medium"
-                                        id="medium"
-                                    />
-                                    <Label
-                                        htmlFor={"medium"}
-                                        className="flex  p-2 flex-col items-center justify-between rounded-md border-2 bg-white  hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary"
-                                    >
-                                        Medium
-                                    </Label>
-                                </div>
-
-                                <div>
-                                    <RadioGroupItem
-                                        aria-label="Large"
-                                        className="peer sr-only"
-                                        value="large"
-                                        id="large"
-                                    />
-                                    <Label
-                                        htmlFor={"large"}
-                                        className="flex  p-2 flex-col items-center justify-between rounded-md border-2 bg-white  hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary"
-                                    >
-                                        Large
-                                    </Label>
-                                </div>
-                            </RadioGroup>
-                        </div>
+                        {Object.entries(product.priceConfiguration).map(([key, value]) => (
+                            <div key={key}>
+                                <h3 className="my-3 font-sm ">Choose {key}</h3>
+                                <RadioGroup className="grid mt-3 grid-cols-3 gap-3">
+                                    {Object.entries(value.avialableOptions).map(([option]) => (
+                                        <div key={option}>
+                                            <RadioGroupItem
+                                                aria-label={option}
+                                                className="peer sr-only"
+                                                value={option}
+                                                id={option}
+                                            />
+                                            <Label
+                                                htmlFor={option}
+                                                className="flex  p-2 flex-col items-center justify-between rounded-md border-2 bg-white  hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary"
+                                            >
+                                                {option.charAt(0).toUpperCase() + option.slice(1)}
+                                            </Label>
+                                        </div>
+                                    ))}
+                                </RadioGroup>
+                            </div>
+                        ))}
                         {/* crust and sizes */}
-                        <h3 className="my-3 font-sm ">Choose Crust</h3>
+                        {/* <h3 className="my-3 font-sm ">Choose Crust</h3>
                         <div>
                             <RadioGroup className="grid mt-3 grid-cols-3 gap-3">
                                 <RadioGroupItem
@@ -105,7 +82,7 @@ export default function ToppingBox({ product }: { product: Product }) {
                                     </Label>
                                 </div>
                             </RadioGroup>
-                        </div>
+                        </div> */}
                         {/* Toppings */}
                         <div className="">
                             <h1 className="my-4 font-sm">Extra Topping</h1>
