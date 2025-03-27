@@ -20,7 +20,7 @@ const delayFetch = (url: string, delay = 3000) => {
 export default async function ProductCard() {
     const response = await delayFetch(
         `${process.env.BACKEND_URL}/api/catalog/product?limit=10&tenantId=7`,
-        4000
+        100
     );
     if (!(response as Response).ok) {
         throw new Error("Product is not able to fetch");

@@ -59,5 +59,6 @@ export interface ResponseType<T> {
     currentPage: number;
     perPage: number;
     total: number;
-    data: T[];
+    data?: T[];
+    docs: T[];
 }
