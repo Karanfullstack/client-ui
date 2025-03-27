@@ -22,7 +22,7 @@ type props = {
 };
 
 export default function Topping({ topping, isSelected, state }: props) {
-    const is = state.some((item) => item._id === topping._id);
+    const is = state?.some((item) => item._id === topping._id);
 
     return (
         <Button

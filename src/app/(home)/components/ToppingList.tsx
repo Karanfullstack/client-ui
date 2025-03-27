@@ -5,20 +5,21 @@ import { ResponseType } from "@/types";
 
 export default function ToppingList() {
     const [toppings, setToppings] = useState<ToppingType[] | []>([]);
-
+    const [state, setState] = useState<ToppingType[] | []>([]);
+    // TODO: MAKE DYNMAIC TENANT ID
     useEffect(() => {
         const fetchToppings = async () => {
             const data = await fetch(
                 `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/catalog/topping?tenantId=26`
             );
             const toppingResponse: ResponseType<ToppingType> = await data.json();
-            console.log(toppingResponse);
             setToppings(toppingResponse.docs);
+            setState([toppingResponse.docs[0]]);
         };
         fetchToppings();
     }, []);
 
-    const [state, setState] = useState<ToppingType[] | []>([]);
+    console.log("stae...", state);
     const isSelected = (topping: ToppingType) => {
         const is = state.some((item: ToppingType) => item._id === topping._id);
         if (is) {
