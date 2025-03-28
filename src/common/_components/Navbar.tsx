@@ -9,8 +9,9 @@ import {
     SelectValue,
 } from "@/components/ui/select";
 import { Tenant, ResponseType } from "@/types";
-import { Phone, ShoppingBasket } from "lucide-react";
+import { Phone } from "lucide-react";
 import Link from "next/link";
+import CartCount from "./CartCount";
 
 export default async function Navbar() {
     const response = await fetch(`${process.env.BACKEND_URL}/api/auth/tenants`, {
@@ -57,14 +58,8 @@ export default async function Navbar() {
                                 </li>
                             </ul>
                         </div>
-                        <div className=" relative mr-4">
-                            <Link href={"/"}>
-                                <ShoppingBasket />
-                            </Link>
-                            <span className="w-6 h-6 font-medium absolute flex -top-4 -right-5 text-white  items-center  justify-center bg-orange-500 rounded-full">
-                                8
-                            </span>
-                        </div>
+                        {/* cart count place here */}
+                        <CartCount />
                         <div className="flex justify-center items-center font-medium gap-1">
                             <Phone />
                             <span>+48 129212139</span>
