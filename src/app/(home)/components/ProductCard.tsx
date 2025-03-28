@@ -20,7 +20,7 @@ const delayFetch = (url: string, delay = 3000) => {
 export default async function ProductCard() {
     const response = await delayFetch(
         `${process.env.BACKEND_URL}/api/catalog/product?limit=10&tenantId=7`,
-        100
+        0
     );
     if (!(response as Response).ok) {
         throw new Error("Product is not able to fetch");
@@ -30,7 +30,7 @@ export default async function ProductCard() {
 
     return (
         <div className="grid  w-max m-auto grid-cols-4 gap-y-6 gap-x-6 justify-items-center py-8      ">
-            {productResponse.map((product) => (
+            {productResponse?.map((product) => (
                 <section key={product._id} className="w-64 h-80">
                     <Card className=" text-black h-full overflow-hidden rounded-lg shadow-white  border-0">
                         <div className=" overflow-auto">

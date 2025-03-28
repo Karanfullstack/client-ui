@@ -1,6 +1,7 @@
+"use client";
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
-import React from "react";
+import React, { memo, startTransition, useState } from "react";
 import Image from "next/image";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
@@ -8,8 +9,35 @@ import ToppingList from "./ToppingList";
 import { Button } from "@/components/ui/button";
 import { ShoppingBag } from "lucide-react";
 import { Product } from "@/types";
+import { ToppingType } from "./Topping";
 
-export default function ToppingBox({ product }: { product: Product }) {
+type Props = {
+    [key: string]: string;
+};
+const ToppingBox = function ({ product }: { product: Product }) {
+    const [productConfig, setProductConfig] = useState<Props>({} as Props);
+    const [chooseTopping, setChooseTopping] = useState<ToppingType[] | []>([]);
+
+    // handlign selected toppings by user.
+    const isSelected = (topping: ToppingType) => {
+        const is = chooseTopping.some((item: ToppingType) => item._id === topping._id);
+        if (is) {
+            setChooseTopping((prev) =>
+                prev.filter((item: ToppingType) => item._id !== topping._id)
+            );
+        } else {
+            setChooseTopping((prev) => [...prev, topping]);
+        }
+    };
+
+    // handle radio buttions like size and crust
+    const handelSizeType = (key: string, data: string) => {
+        startTransition(() => {
+            setProductConfig((prev) => ({ ...prev, [key]: data }));
+        });
+    };
+
+    console.log(productConfig);
     return (
         <Dialog>
             <DialogTrigger className="bg-primary w-[90px] hover:cursor-pointer rounded-full p-1 text-white text-sm font-medium px-2">
@@ -30,7 +58,10 @@ export default function ToppingBox({ product }: { product: Product }) {
                         {Object.entries(product.priceConfiguration).map(([key, value]) => (
                             <div key={key}>
                                 <h3 className="my-3 font-sm ">Choose {key}</h3>
-                                <RadioGroup className="grid mt-3 grid-cols-3 gap-3">
+                                <RadioGroup
+                                    onValueChange={(data) => handelSizeType(key, data)}
+                                    className="grid mt-3 grid-cols-3 gap-3"
+                                >
                                     {Object.entries(value.avialableOptions).map(([option]) => (
                                         <div key={option}>
                                             <RadioGroupItem
@@ -86,7 +117,7 @@ export default function ToppingBox({ product }: { product: Product }) {
                         {/* Toppings */}
                         <div className="">
                             <h1 className="my-4 font-sm">Extra Topping</h1>
-                            <ToppingList />
+                            <ToppingList isSelected={isSelected} chooseTopping={chooseTopping} />
                         </div>
                         {/* footer pricing and add to cart */}
                         <div className="pt-2 flex mt-5 mb-0 items-center  justify-between">
@@ -101,4 +132,6 @@ export default function ToppingBox({ product }: { product: Product }) {
             </DialogContent>
         </Dialog>
     );
-}
+};
+
+export default memo(ToppingBox);
