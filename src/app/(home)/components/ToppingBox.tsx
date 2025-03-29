@@ -10,14 +10,29 @@ import { Button } from "@/components/ui/button";
 import { ShoppingBag } from "lucide-react";
 import { Product } from "@/types";
 import { ToppingType } from "./Topping";
+import { useAppDispatch } from "@/store/hooks";
+import { addToCart } from "@/store/cart/cartSlice";
 
 type Props = {
     [key: string]: string;
 };
 const ToppingBox = function ({ product }: { product: Product }) {
-    const [productConfig, setProductConfig] = useState<Props>({} as Props);
-    const [chooseTopping, setChooseTopping] = useState<ToppingType[] | []>([]);
+    const preSelected = Object.entries(product.category.priceConfiguration)
+        .map(([key, value]) => {
+            return {
+                [key]: value.availableOptions[0].toLocaleLowerCase(),
+            };
+        })
+        .reduce((acc, current) => {
+            return {
+                ...acc,
+                ...current,
+            };
+        }, {});
 
+    const [chooseConfig, setChooseConfig] = useState<Props>(preSelected as Props);
+    const [chooseTopping, setChooseTopping] = useState<ToppingType[] | []>([]);
+    const dispatch = useAppDispatch();
     // handlign selected toppings by user.
     const isSelected = (topping: ToppingType) => {
         const is = chooseTopping.some((item: ToppingType) => item._id === topping._id);
@@ -33,11 +48,19 @@ const ToppingBox = function ({ product }: { product: Product }) {
     // handle radio buttions like size and crust
     const handelSizeType = (key: string, data: string) => {
         startTransition(() => {
-            setProductConfig((prev) => ({ ...prev, [key]: data }));
+            setChooseConfig((prev) => ({ ...prev, [key]: data.toLocaleLowerCase() }));
         });
     };
 
-    console.log(productConfig);
+    const handelCart = (product: Product) => {
+        dispatch(
+            addToCart({
+                product,
+                config: chooseConfig,
+            })
+        );
+    };
+
     return (
         <Dialog>
             <DialogTrigger className="bg-primary w-[90px] hover:cursor-pointer rounded-full p-1 text-white text-sm font-medium px-2">
@@ -55,14 +78,15 @@ const ToppingBox = function ({ product }: { product: Product }) {
                         <h3 className="text-xl font-medium">{product.name}</h3>
                         <p className="mt-2 font-normal text-sm">{product.description}</p>
 
-                        {Object.entries(product.priceConfiguration).map(([key, value]) => (
+                        {Object.entries(product.category.priceConfiguration).map(([key, value]) => (
                             <div key={key}>
                                 <h3 className="my-3 font-sm ">Choose {key}</h3>
                                 <RadioGroup
+                                    defaultValue={value.availableOptions[0]}
                                     onValueChange={(data) => handelSizeType(key, data)}
                                     className="grid mt-3 grid-cols-3 gap-3"
                                 >
-                                    {Object.entries(value.avialableOptions).map(([option]) => (
+                                    {value.availableOptions.map((option) => (
                                         <div key={option}>
                                             <RadioGroupItem
                                                 aria-label={option}
@@ -74,7 +98,8 @@ const ToppingBox = function ({ product }: { product: Product }) {
                                                 htmlFor={option}
                                                 className="flex  p-2 flex-col items-center justify-between rounded-md border-2 bg-white  hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary"
                                             >
-                                                {option.charAt(0).toUpperCase() + option.slice(1)}
+                                                {option.charAt(0).toLocaleUpperCase() +
+                                                    option.slice(1)}
                                             </Label>
                                         </div>
                                     ))}
@@ -122,7 +147,10 @@ const ToppingBox = function ({ product }: { product: Product }) {
                         {/* footer pricing and add to cart */}
                         <div className="pt-2 flex mt-5 mb-0 items-center  justify-between">
                             <span className=" font-bold ">$20.33</span>
-                            <Button className="rounded-full font-medium bg-primary">
+                            <Button
+                                onClick={() => handelCart(product)}
+                                className="rounded-full font-medium bg-primary"
+                            >
                                 <ShoppingBag />
                                 Add Cart
                             </Button>
