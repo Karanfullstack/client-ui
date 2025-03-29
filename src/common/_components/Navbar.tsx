@@ -11,7 +11,7 @@ import {
 import { Tenant, ResponseType } from "@/types";
 import { Phone } from "lucide-react";
 import Link from "next/link";
-import CartCount from "./CartCount";
+import CartSSR from "./CartSSR";
 
 export default async function Navbar() {
     const response = await fetch(`${process.env.BACKEND_URL}/api/auth/tenants`, {
@@ -59,7 +59,7 @@ export default async function Navbar() {
                             </ul>
                         </div>
                         {/* cart count place here */}
-                        <CartCount />
+                        <CartSSR />
                         <div className="flex justify-center items-center font-medium gap-1">
                             <Phone />
                             <span>+48 129212139</span>

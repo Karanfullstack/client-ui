@@ -1,6 +1,6 @@
 import { ToppingType } from "@/app/(home)/components/Topping";
 import { Product } from "@/types";
-import { createSlice } from "@reduxjs/toolkit";
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export interface CartSlice {
     product: Product;
@@ -21,22 +21,24 @@ export const cartSlice = createSlice({
     initialState,
     reducers: {
         addToCart: (state, action) => {
-            return {
-                cart: [
-                    ...state.cart,
-                    {
-                        product: action.payload.product,
-                        configuration: {
-                            priceConfiguration: action.payload.config,
-                            toppings: action.payload.toppings,
-                        },
-                    },
-                ],
+            const paylaod = {
+                product: action.payload.product,
+                configuration: {
+                    priceConfiguration: action.payload.config,
+                    toppings: action.payload.toppings,
+                },
             };
+            window.localStorage.setItem("items", JSON.stringify([...state.cart, paylaod]));
+            return {
+                cart: [...state.cart, paylaod],
+            };
+        },
+        persistData: (state, action: PayloadAction<CartSlice[]>) => {
+            state.cart.push(...action.payload);
         },
     },
 });
 
 // Action creators are generated for each case reducer function
-export const { addToCart } = cartSlice.actions;
+export const { addToCart, persistData } = cartSlice.actions;
 export default cartSlice.reducer;
