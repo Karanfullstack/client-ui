@@ -1,7 +1,7 @@
 "use client";
 import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
-import React, { memo, startTransition, useState } from "react";
+import React, { memo, startTransition, useMemo, useState } from "react";
 import Image from "next/image";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
@@ -20,7 +20,7 @@ const ToppingBox = function ({ product }: { product: Product }) {
     const preSelectedRadio = Object.entries(product.category.priceConfiguration)
         .map(([key, value]) => {
             return {
-                [key]: value.availableOptions[0].toLocaleLowerCase(),
+                [key]: value.availableOptions[0],
             };
         })
         .reduce((acc, current) => {
@@ -49,10 +49,23 @@ const ToppingBox = function ({ product }: { product: Product }) {
     // handle radio buttions like size and crust
     const handelSizeType = (key: string, data: string) => {
         startTransition(() => {
-            setChooseConfig((prev) => ({ ...prev, [key]: data.toLocaleLowerCase() }));
+            setChooseConfig((prev) => ({ ...prev, [key]: data }));
         });
     };
+    // total price
+    const totalPrice = useMemo(() => {
+        const toppinPrice = chooseTopping.reduce((acc, current) => {
+            return acc + current.price;
+        }, 0);
+        const productPrice = Object.entries(chooseConfig)
+            .map(([key, value]) => {
+                const price = product.priceConfiguration[key].avialableOptions[value];
+                return Number(price);
+            })
+            .reduce((acc, curr) => acc + curr, 0);
 
+        return toppinPrice + productPrice;
+    }, [chooseConfig, chooseTopping, product.priceConfiguration]);
     // add to store selecting items
     const handelCart = (product: Product) => {
         const addItems = {
@@ -148,7 +161,7 @@ const ToppingBox = function ({ product }: { product: Product }) {
                         </div>
                         {/* footer pricing and add to cart */}
                         <div className="pt-2 flex mt-5 mb-0 items-center  justify-between">
-                            <span className=" font-bold ">$20.33</span>
+                            <span className=" font-bold ">${totalPrice}</span>
                             <Button
                                 onClick={() => handelCart(product)}
                                 className="rounded-full font-medium bg-primary"

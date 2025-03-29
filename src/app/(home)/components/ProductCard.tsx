@@ -8,9 +8,7 @@ const delayFetch = (url: string, delay = 3000) => {
     return new Promise((resolve) => {
         setTimeout(async () => {
             const response = await fetch(url, {
-                next: {
-                    revalidate: 60 * 60,
-                },
+                cache: "no-store",
             });
             resolve(response);
         }, delay);
@@ -19,7 +17,7 @@ const delayFetch = (url: string, delay = 3000) => {
 
 export default async function ProductCard() {
     const response = await delayFetch(
-        `${process.env.BACKEND_URL}/api/catalog/product?limit=10&tenantId=7`,
+        `${process.env.BACKEND_URL}/api/catalog/product?limit=10&tenantId=26`,
         0
     );
     if (!(response as Response).ok) {
@@ -27,7 +25,7 @@ export default async function ProductCard() {
     }
     const responseData = await (response as Response).json();
     const { data: productResponse }: ResponseType<Product> = responseData;
-
+    
     return (
         <div className="grid  w-max m-auto grid-cols-4 gap-y-6 gap-x-6 justify-items-center py-8      ">
             {productResponse?.map((product) => (
