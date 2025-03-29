@@ -17,7 +17,7 @@ type Props = {
     [key: string]: string;
 };
 const ToppingBox = function ({ product }: { product: Product }) {
-    const preSelected = Object.entries(product.category.priceConfiguration)
+    const preSelectedRadio = Object.entries(product.category.priceConfiguration)
         .map(([key, value]) => {
             return {
                 [key]: value.availableOptions[0].toLocaleLowerCase(),
@@ -30,7 +30,7 @@ const ToppingBox = function ({ product }: { product: Product }) {
             };
         }, {});
 
-    const [chooseConfig, setChooseConfig] = useState<Props>(preSelected as Props);
+    const [chooseConfig, setChooseConfig] = useState<Props>(preSelectedRadio as Props);
     const [chooseTopping, setChooseTopping] = useState<ToppingType[] | []>([]);
 
     const dispatch = useAppDispatch();
@@ -53,6 +53,7 @@ const ToppingBox = function ({ product }: { product: Product }) {
         });
     };
 
+    // add to store selecting items
     const handelCart = (product: Product) => {
         const addItems = {
             product: product,
