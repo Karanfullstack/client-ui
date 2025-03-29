@@ -1,3 +1,4 @@
+import { ToppingType } from "@/app/(home)/components/Topping";
 import { Product } from "@/types";
 import { createSlice } from "@reduxjs/toolkit";
 
@@ -5,6 +6,7 @@ export interface CartSlice {
     product: Product;
     configuration: {
         priceConfiguration: { [key: string]: string };
+        toppings: ToppingType[];
     };
 }
 
@@ -26,6 +28,7 @@ export const cartSlice = createSlice({
                         product: action.payload.product,
                         configuration: {
                             priceConfiguration: action.payload.config,
+                            toppings: action.payload.toppings,
                         },
                     },
                 ],

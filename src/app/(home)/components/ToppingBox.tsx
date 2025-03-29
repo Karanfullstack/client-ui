@@ -32,6 +32,7 @@ const ToppingBox = function ({ product }: { product: Product }) {
 
     const [chooseConfig, setChooseConfig] = useState<Props>(preSelected as Props);
     const [chooseTopping, setChooseTopping] = useState<ToppingType[] | []>([]);
+
     const dispatch = useAppDispatch();
     // handlign selected toppings by user.
     const isSelected = (topping: ToppingType) => {
@@ -53,12 +54,12 @@ const ToppingBox = function ({ product }: { product: Product }) {
     };
 
     const handelCart = (product: Product) => {
-        dispatch(
-            addToCart({
-                product,
-                config: chooseConfig,
-            })
-        );
+        const addItems = {
+            product: product,
+            config: chooseConfig,
+            toppings: chooseTopping,
+        };
+        dispatch(addToCart(addItems));
     };
 
     return (
