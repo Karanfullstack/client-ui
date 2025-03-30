@@ -10,13 +10,15 @@ import { Button } from "@/components/ui/button";
 import { ShoppingBag } from "lucide-react";
 import { Product } from "@/types";
 import { ToppingType } from "./Topping";
-import { useAppDispatch } from "@/store/hooks";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { addToCart } from "@/store/cart/cartSlice";
+import { cn, myHasString } from "@/lib/utils";
 
 type Props = {
     [key: string]: string;
 };
 const ToppingBox = function ({ product }: { product: Product }) {
+    const cartItems = useAppSelector((state) => state.cart.cart);
     const preSelectedRadio = Object.entries(product.category.priceConfiguration)
         .map(([key, value]) => {
             return {
@@ -66,10 +68,24 @@ const ToppingBox = function ({ product }: { product: Product }) {
 
         return toppinPrice + productPrice;
     }, [chooseConfig, chooseTopping, product.priceConfiguration]);
+
+    // check if product is already in cart
+    const hasProduct = useMemo(() => {
+        const item = {
+            product,
+            config: chooseConfig,
+            toppings: chooseTopping,
+        };
+        const hash = myHasString(item);
+        const is = cartItems.some((doc) => doc.hash === hash);
+        console.log(is);
+        return is;
+    }, [cartItems, chooseConfig, chooseTopping, product]);
+
     // add to store selecting items
     const handelCart = (product: Product) => {
         const addItems = {
-            product: product,
+            product,
             config: chooseConfig,
             toppings: chooseTopping,
         };
@@ -121,40 +137,9 @@ const ToppingBox = function ({ product }: { product: Product }) {
                                 </RadioGroup>
                             </div>
                         ))}
-                        {/* crust and sizes */}
-                        {/* <h3 className="my-3 font-sm ">Choose Crust</h3>
-                        <div>
-                            <RadioGroup className="grid mt-3 grid-cols-3 gap-3">
-                                <RadioGroupItem
-                                    aria-label="Thin"
-                                    className="peer sr-only "
-                                    value="thin"
-                                    id="thin"
-                                />
-                                <Label
-                                    htmlFor={"thin"}
-                                    className="flex p-2 flex-col items-center justify-between rounded-md border-2 bg-white  hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary"
-                                >
-                                    Small
-                                </Label>
 
-                                <div>
-                                    <RadioGroupItem
-                                        aria-label="Thick"
-                                        className="peer sr-only"
-                                        value="thick"
-                                        id="thick"
-                                    />
-                                    <Label
-                                        htmlFor={"thick"}
-                                        className="flex  p-2 flex-col items-center justify-between rounded-md border-2 bg-white  hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary"
-                                    >
-                                        Medium
-                                    </Label>
-                                </div>
-                            </RadioGroup>
-                        </div> */}
                         {/* Toppings */}
+                        {/* TODO: Show topping according to flag in category like isTopping=true */}
                         <div className="">
                             <h1 className="my-4 font-sm">Extra Topping</h1>
                             <ToppingList isSelected={isSelected} chooseTopping={chooseTopping} />
@@ -163,8 +148,12 @@ const ToppingBox = function ({ product }: { product: Product }) {
                         <div className="pt-2 flex mt-5 mb-0 items-center  justify-between">
                             <span className=" font-bold ">${totalPrice}</span>
                             <Button
+                                disabled={hasProduct}
                                 onClick={() => handelCart(product)}
-                                className="rounded-full font-medium bg-primary"
+                                className={cn(
+                                    "rounded-full hover:cursor-pointer font-medium bg-primary",
+                                    hasProduct && "bg-gray-400 hover:bg-gray-400"
+                                )}
                             >
                                 <ShoppingBag />
                                 Add Cart

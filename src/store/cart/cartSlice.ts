@@ -1,13 +1,13 @@
 import { ToppingType } from "@/app/(home)/components/Topping";
+import { myHasString } from "@/lib/utils";
 import { Product } from "@/types";
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export interface CartSlice {
     product: Product;
-    configuration: {
-        priceConfiguration: { [key: string]: string };
-        toppings: ToppingType[];
-    };
+    config: { [key: string]: string };
+    toppings: ToppingType[];
+    hash?: string;
 }
 
 export interface CartState {
@@ -21,12 +21,12 @@ export const cartSlice = createSlice({
     initialState,
     reducers: {
         addToCart: (state, action) => {
+            const hash = myHasString({ ...action.payload });
             const paylaod = {
                 product: action.payload.product,
-                configuration: {
-                    priceConfiguration: action.payload.config,
-                    toppings: action.payload.toppings,
-                },
+                config: action.payload.config,
+                toppings: action.payload.toppings,
+                hash,
             };
             window.localStorage.setItem("items", JSON.stringify([...state.cart, paylaod]));
             return {
