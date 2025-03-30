@@ -6,8 +6,12 @@ import Tab from "./components/Tab";
 import { Suspense } from "react";
 import { CardSkeleton } from "./components/CardSkeleton";
 import { Toaster } from "sonner";
-
-export default function Home() {
+export interface FilterProps {
+    searchParams: {
+        restaurant: string;
+    };
+}
+export default function Home({ searchParams }: FilterProps) {
     return (
         <main className="">
             <Toaster expand={false} richColors position="top-center" />
@@ -38,7 +42,7 @@ export default function Home() {
 
                     {/* product card render  */}
                     <Suspense fallback={<CardSkeleton />}>
-                        <ProductCard />
+                        <ProductCard searchParams={searchParams} />
                     </Suspense>
                 </div>
             </section>

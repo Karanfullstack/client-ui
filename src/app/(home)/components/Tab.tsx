@@ -13,9 +13,9 @@ export default async function Tab() {
     }
     const { data: categoryData }: ResponseType<Category> = await categoryResponse.json();
     return (
-        <Tabs defaultValue={categoryData[0]._id} className="w-[200px]  ">
+        <Tabs defaultValue={categoryData && categoryData[0]._id} className="w-[200px]  ">
             <TabsList className="w-full ">
-                {categoryData.map((category) => (
+                {categoryData?.map((category) => (
                     <TabsTrigger key={category._id} className="text-md" value={category._id}>
                         {category.name}
                     </TabsTrigger>

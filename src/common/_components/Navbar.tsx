@@ -1,17 +1,9 @@
 import { Button } from "@/components/ui/button";
-import {
-    Select,
-    SelectContent,
-    SelectGroup,
-    SelectItem,
-    SelectLabel,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select";
 import { Tenant, ResponseType } from "@/types";
 import { Phone } from "lucide-react";
 import Link from "next/link";
 import CartSSR from "./CartSSR";
+import SelectRestaurant from "./SelectRestaurant";
 
 export default async function Navbar() {
     const response = await fetch(`${process.env.BACKEND_URL}/api/auth/tenants`, {
@@ -25,25 +17,11 @@ export default async function Navbar() {
     return (
         <header className=" ">
             <nav className=" py-4 container m-auto flex items-center justify-between ">
-                {/* right side secion */}
+                {/* right side section */}
                 <section className="flex space-x-4">
                     <span className="text-2xl font-bold">🍕 Pizza</span>
                     {/* select restaurant options */}
-                    <Select>
-                        <SelectTrigger className="w-[180px] ">
-                            <SelectValue placeholder="Select a Restaurant" />
-                        </SelectTrigger>
-                        <SelectContent className="">
-                            <SelectGroup className=" ">
-                                <SelectLabel>Restaurants</SelectLabel>
-                                {restaurants?.map((tenant) => (
-                                    <SelectItem key={tenant.id} value={String(tenant.id)}>
-                                        {tenant.name}
-                                    </SelectItem>
-                                ))}
-                            </SelectGroup>
-                        </SelectContent>
-                    </Select>
+                    <SelectRestaurant restaurants={restaurants} />
                 </section>
                 {/* left side section */}
                 <section className="text-sm">

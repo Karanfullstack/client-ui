@@ -3,6 +3,7 @@ import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
 import ToppingBox from "./ToppingBox";
 import { Product, ResponseType } from "@/types";
 import { miniMumPrice } from "@/lib/utils";
+import { FilterProps } from "../page";
 
 // This function is used to delay the fetch request as testing purpose
 const delayFetch = (url: string, delay = 3000) => {
@@ -16,9 +17,9 @@ const delayFetch = (url: string, delay = 3000) => {
     });
 };
 
-export default async function ProductCard() {
+export default async function ProductCard({ searchParams }: FilterProps) {
     const response = await delayFetch(
-        `${process.env.BACKEND_URL}/api/catalog/product?limit=10&tenantId=26`,
+        `${process.env.BACKEND_URL}/api/catalog/product?limit=10&tenantId=${searchParams.restaurant}`,
         0
     );
     if (!(response as Response).ok) {
