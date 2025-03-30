@@ -1,5 +1,11 @@
 "use client";
-import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import {
+    Dialog,
+    DialogClose,
+    DialogContent,
+    DialogTitle,
+    DialogTrigger,
+} from "@/components/ui/dialog";
 import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 import React, { memo, startTransition, useMemo, useState } from "react";
 import Image from "next/image";
@@ -78,7 +84,6 @@ const ToppingBox = function ({ product }: { product: Product }) {
         };
         const hash = myHasString(item);
         const is = cartItems.some((doc) => doc.hash === hash);
-        console.log(is);
         return is;
     }, [cartItems, chooseConfig, chooseTopping, product]);
 
@@ -145,7 +150,7 @@ const ToppingBox = function ({ product }: { product: Product }) {
                             <ToppingList isSelected={isSelected} chooseTopping={chooseTopping} />
                         </div>
                         {/* footer pricing and add to cart */}
-                        <div className="pt-2 flex mt-5 mb-0 items-center  justify-between">
+                        <div className="pt-2 flex mt-5 mb-0 items-center justify-between">
                             <span className=" font-bold ">${totalPrice}</span>
                             <Button
                                 disabled={hasProduct}
@@ -158,6 +163,19 @@ const ToppingBox = function ({ product }: { product: Product }) {
                                 <ShoppingBag />
                                 Add Cart
                             </Button>
+                            <DialogClose asChild>
+                                <Button
+                                    onClick={() => {
+                                        setChooseConfig({});
+                                        setChooseTopping([]);
+                                    }}
+                                    className="bg-gray-200 cursor-pointer hover:!bg-gray-200"
+                                    type="button"
+                                    variant="ghost"
+                                >
+                                    Close
+                                </Button>
+                            </DialogClose>
                         </div>
                     </div>
                 </div>
