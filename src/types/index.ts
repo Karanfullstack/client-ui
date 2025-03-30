@@ -30,7 +30,7 @@ export interface ProductPriceConfig {
         _id: string;
         priceType: "base" | "additional";
         avialableOptions: {
-            [key: string]: number | string;
+            [key: string]: number;
         };
     };
 }

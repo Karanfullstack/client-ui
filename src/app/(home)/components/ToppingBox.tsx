@@ -1,4 +1,5 @@
 "use client";
+import { Button } from "@/components/ui/button";
 import {
     Dialog,
     DialogClose,
@@ -6,20 +7,19 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog";
-import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
-import React, { memo, startTransition, useMemo, useState } from "react";
-import Image from "next/image";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
-import ToppingList from "./ToppingList";
-import { Button } from "@/components/ui/button";
-import { CheckCircle, icons, ShoppingBag } from "lucide-react";
-import { Product } from "@/types";
-import { ToppingType } from "./Topping";
-import { useAppDispatch, useAppSelector } from "@/store/hooks";
-import { addToCart } from "@/store/cart/cartSlice";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { cn, myHasString } from "@/lib/utils";
+import { addToCart } from "@/store/cart/cartSlice";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import { Product } from "@/types";
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
+import { CheckCircle, ShoppingBag } from "lucide-react";
+import Image from "next/image";
+import { memo, startTransition, useMemo, useState } from "react";
 import { toast } from "sonner";
+import { ToppingType } from "./Topping";
+import ToppingList from "./ToppingList";
 type Props = {
     [key: string]: string;
 };

@@ -2,6 +2,7 @@ import Image from "next/image";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import ToppingBox from "./ToppingBox";
 import { Product, ResponseType } from "@/types";
+import { miniMumPrice } from "@/lib/utils";
 
 // This function is used to delay the fetch request as testing purpose
 const delayFetch = (url: string, delay = 3000) => {
@@ -25,7 +26,7 @@ export default async function ProductCard() {
     }
     const responseData = await (response as Response).json();
     const { data: productResponse }: ResponseType<Product> = responseData;
-    
+
     return (
         <div className="grid  w-max m-auto grid-cols-4 gap-y-6 gap-x-6 justify-items-center py-8      ">
             {productResponse?.map((product) => (
@@ -53,7 +54,10 @@ export default async function ProductCard() {
 
                             <CardFooter>
                                 <div className="flex justify-between items-center w-[240px] m-auto">
-                                    <span>From ${1000}</span>
+                                    <span>
+                                        From $
+                                        <span className="font-bold">{miniMumPrice(product)}</span>
+                                    </span>
                                     <ToppingBox product={product} />
                                 </div>
                             </CardFooter>
