@@ -13,18 +13,19 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Label } from "@/components/ui/label";
 import ToppingList from "./ToppingList";
 import { Button } from "@/components/ui/button";
-import { ShoppingBag } from "lucide-react";
+import { CheckCircle, icons, ShoppingBag } from "lucide-react";
 import { Product } from "@/types";
 import { ToppingType } from "./Topping";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { addToCart } from "@/store/cart/cartSlice";
 import { cn, myHasString } from "@/lib/utils";
-
+import { toast } from "sonner";
 type Props = {
     [key: string]: string;
 };
 const ToppingBox = function ({ product }: { product: Product }) {
     const cartItems = useAppSelector((state) => state.cart.cart);
+
     const preSelectedRadio = Object.entries(product.category.priceConfiguration)
         .map(([key, value]) => {
             return {
@@ -40,8 +41,9 @@ const ToppingBox = function ({ product }: { product: Product }) {
 
     const [chooseConfig, setChooseConfig] = useState<Props>(preSelectedRadio as Props);
     const [chooseTopping, setChooseTopping] = useState<ToppingType[] | []>([]);
-
+    const [dialogOpen, setDialogOpen] = useState(false);
     const dispatch = useAppDispatch();
+
     // handlign selected toppings by user.
     const isSelected = (topping: ToppingType) => {
         const is = chooseTopping.some((item: ToppingType) => item._id === topping._id);
@@ -84,6 +86,7 @@ const ToppingBox = function ({ product }: { product: Product }) {
         };
         const hash = myHasString(item);
         const is = cartItems.some((doc) => doc.hash === hash);
+
         return is;
     }, [cartItems, chooseConfig, chooseTopping, product]);
 
@@ -94,11 +97,21 @@ const ToppingBox = function ({ product }: { product: Product }) {
             config: chooseConfig,
             toppings: chooseTopping,
         };
+        toast(
+            <span className="flex gap-2">
+                <CheckCircle color="green" /> One item added.
+            </span>,
+
+            {
+                description: `${product.name} has been added`,
+            }
+        );
+
         dispatch(addToCart(addItems));
     };
 
     return (
-        <Dialog>
+        <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
             <DialogTrigger className="bg-primary w-[90px] hover:cursor-pointer rounded-full p-1 text-white text-sm font-medium px-2">
                 Select
             </DialogTrigger>
@@ -166,8 +179,8 @@ const ToppingBox = function ({ product }: { product: Product }) {
                             <DialogClose asChild>
                                 <Button
                                     onClick={() => {
-                                        setChooseConfig({});
                                         setChooseTopping([]);
+                                        setDialogOpen(false);
                                     }}
                                     className="bg-gray-200 cursor-pointer hover:!bg-gray-200"
                                     type="button"

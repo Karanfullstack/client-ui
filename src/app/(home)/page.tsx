@@ -6,11 +6,13 @@ import ProductCard from "./components/ProductCard";
 import Tab from "./components/Tab";
 import { Suspense } from "react";
 import { CardSkeleton } from "./components/CardSkeleton";
+import { Toaster } from "sonner";
 
 export default function Home() {
     return (
         <main className="">
-            <div className="flex container m-auto justify-between items-center h-[500] ">
+            <Toaster expand="false" richColors position="top-center" />
+            <div className="flex container m-auto justify-between items-center h-[400px] ">
                 <section className=" flex flex-col justify-center ">
                     <h1 className="text-7xl font-black font-sans ">
                         Super Delecious Pizza
