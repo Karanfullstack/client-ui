@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import Topping, { ToppingType } from "./Topping";
 import { ResponseType } from "@/types";
+import { useSearchParams } from "next/navigation";
 
 type Props = {
     isSelected: (topping: ToppingType) => void;
@@ -9,18 +10,18 @@ type Props = {
 };
 export default function ToppingList({ isSelected, chooseTopping }: Props) {
     const [toppings, setToppings] = useState<ToppingType[] | []>([]);
+    const params = useSearchParams().get("restaurant");
 
-    // TODO: MAKE DYNMAIC TENANT ID
     useEffect(() => {
         const fetchToppings = async () => {
             const data = await fetch(
-                `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/catalog/topping?tenantId=26`
+                `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/catalog/topping?tenantId=${params}`
             );
             const toppingResponse: ResponseType<ToppingType> = await data.json();
             setToppings(toppingResponse.docs);
         };
         fetchToppings();
-    }, []);
+    }, [params]);
 
     return (
         <section className="flex justify-center gap-2 items-center">
