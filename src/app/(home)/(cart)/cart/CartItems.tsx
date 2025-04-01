@@ -7,6 +7,7 @@ import { useAppSelector } from "@/store/hooks";
 
 export default function CartItems() {
     const state = useAppSelector((state) => state.cart.cart);
+
     return (
         <>
             {state.map((item) => (
