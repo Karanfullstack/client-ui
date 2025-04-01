@@ -83,6 +83,7 @@ const ToppingBox = function ({ product }: { product: Product }) {
             product,
             config: chooseConfig,
             toppings: chooseTopping,
+            qty: 1,
         };
         const hash = myHasString(item);
         const is = cartItems.some((doc) => doc.hash === hash);

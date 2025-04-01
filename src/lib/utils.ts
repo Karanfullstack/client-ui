@@ -9,7 +9,7 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export function myHasString(payload: CartSlice) {
-    const jsonString = JSON.stringify(payload);
+    const jsonString = JSON.stringify({ ...payload, qty: undefined });
     return crypto.createHash("sha256").update(jsonString).digest("hex");
 }
 
