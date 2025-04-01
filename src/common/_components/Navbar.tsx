@@ -15,7 +15,7 @@ export default async function Navbar() {
     const { data: restaurants }: ResponseType<Tenant> = await response.json();
 
     return (
-        <header className=" ">
+        <header className=" h-16 ">
             <nav className=" py-4 container m-auto flex items-center justify-between ">
                 {/* right side section */}
                 <section className="flex space-x-4">
