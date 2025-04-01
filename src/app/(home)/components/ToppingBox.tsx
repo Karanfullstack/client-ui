@@ -1,17 +1,117 @@
-import { Dialog, DialogContent, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
-import React from "react";
-import Image from "next/image";
-import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
-import { Label } from "@/components/ui/label";
-import ToppingList from "./ToppingList";
+"use client";
 import { Button } from "@/components/ui/button";
-import { ShoppingBag } from "lucide-react";
+import {
+    Dialog,
+    DialogClose,
+    DialogContent,
+    DialogTitle,
+    DialogTrigger,
+} from "@/components/ui/dialog";
+import { Label } from "@/components/ui/label";
+import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
+import { cn, myHasString } from "@/lib/utils";
+import { addToCart } from "@/store/cart/cartSlice";
+import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { Product } from "@/types";
+import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
+import { CheckCircle, ShoppingBag } from "lucide-react";
+import Image from "next/image";
+import { memo, startTransition, useMemo, useState } from "react";
+import { toast } from "sonner";
+import { ToppingType } from "./Topping";
+import ToppingList from "./ToppingList";
+type Props = {
+    [key: string]: string;
+};
+const ToppingBox = function ({ product }: { product: Product }) {
+    const cartItems = useAppSelector((state) => state.cart.cart);
 
-export default function ToppingBox({ product }: { product: Product }) {
+    const preSelectedRadio = Object.entries(product.category.priceConfiguration)
+        .map(([key, value]) => {
+            return {
+                [key]: value.availableOptions[0],
+            };
+        })
+        .reduce((acc, current) => {
+            return {
+                ...acc,
+                ...current,
+            };
+        }, {});
+
+    const [chooseConfig, setChooseConfig] = useState<Props>(preSelectedRadio as Props);
+    const [chooseTopping, setChooseTopping] = useState<ToppingType[] | []>([]);
+    const [dialogOpen, setDialogOpen] = useState(false);
+    const dispatch = useAppDispatch();
+
+    // handlign selected toppings by user.
+    const isSelected = (topping: ToppingType) => {
+        const is = chooseTopping.some((item: ToppingType) => item._id === topping._id);
+        if (is) {
+            setChooseTopping((prev) =>
+                prev.filter((item: ToppingType) => item._id !== topping._id)
+            );
+        } else {
+            setChooseTopping((prev) => [...prev, topping]);
+        }
+    };
+
+    // handle radio buttions like size and crust
+    const handelSizeType = (key: string, data: string) => {
+        startTransition(() => {
+            setChooseConfig((prev) => ({ ...prev, [key]: data }));
+        });
+    };
+    // total price
+    const totalPrice = useMemo(() => {
+        const toppinPrice = chooseTopping.reduce((acc, current) => {
+            return acc + current.price;
+        }, 0);
+        const productPrice = Object.entries(chooseConfig)
+            .map(([key, value]) => {
+                const price = product.priceConfiguration[key].avialableOptions[value];
+                return Number(price);
+            })
+            .reduce((acc, curr) => acc + curr, 0);
+
+        return toppinPrice + productPrice;
+    }, [chooseConfig, chooseTopping, product.priceConfiguration]);
+
+    // check if product is already in cart
+    const hasProduct = useMemo(() => {
+        const item = {
+            product,
+            config: chooseConfig,
+            toppings: chooseTopping,
+        };
+        const hash = myHasString(item);
+        const is = cartItems.some((doc) => doc.hash === hash);
+
+        return is;
+    }, [cartItems, chooseConfig, chooseTopping, product]);
+
+    // add to store selecting items
+    const handelCart = (product: Product) => {
+        const addItems = {
+            product,
+            config: chooseConfig,
+            toppings: chooseTopping,
+        };
+        toast(
+            <span className="flex gap-2">
+                <CheckCircle color="green" /> One item added.
+            </span>,
+
+            {
+                description: `${product.name} has been added`,
+            }
+        );
+
+        dispatch(addToCart(addItems));
+    };
+
     return (
-        <Dialog>
+        <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
             <DialogTrigger className="bg-primary w-[90px] hover:cursor-pointer rounded-full p-1 text-white text-sm font-medium px-2">
                 Select
             </DialogTrigger>
@@ -27,11 +127,15 @@ export default function ToppingBox({ product }: { product: Product }) {
                         <h3 className="text-xl font-medium">{product.name}</h3>
                         <p className="mt-2 font-normal text-sm">{product.description}</p>
 
-                        {Object.entries(product.priceConfiguration).map(([key, value]) => (
+                        {Object.entries(product.category.priceConfiguration).map(([key, value]) => (
                             <div key={key}>
                                 <h3 className="my-3 font-sm ">Choose {key}</h3>
-                                <RadioGroup className="grid mt-3 grid-cols-3 gap-3">
-                                    {Object.entries(value.avialableOptions).map(([option]) => (
+                                <RadioGroup
+                                    defaultValue={value.availableOptions[0]}
+                                    onValueChange={(data) => handelSizeType(key, data)}
+                                    className="grid mt-3 grid-cols-3 gap-3"
+                                >
+                                    {value.availableOptions.map((option) => (
                                         <div key={option}>
                                             <RadioGroupItem
                                                 aria-label={option}
@@ -43,62 +147,54 @@ export default function ToppingBox({ product }: { product: Product }) {
                                                 htmlFor={option}
                                                 className="flex  p-2 flex-col items-center justify-between rounded-md border-2 bg-white  hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary"
                                             >
-                                                {option.charAt(0).toUpperCase() + option.slice(1)}
+                                                {option.charAt(0).toLocaleUpperCase() +
+                                                    option.slice(1)}
                                             </Label>
                                         </div>
                                     ))}
                                 </RadioGroup>
                             </div>
                         ))}
-                        {/* crust and sizes */}
-                        {/* <h3 className="my-3 font-sm ">Choose Crust</h3>
-                        <div>
-                            <RadioGroup className="grid mt-3 grid-cols-3 gap-3">
-                                <RadioGroupItem
-                                    aria-label="Thin"
-                                    className="peer sr-only "
-                                    value="thin"
-                                    id="thin"
-                                />
-                                <Label
-                                    htmlFor={"thin"}
-                                    className="flex p-2 flex-col items-center justify-between rounded-md border-2 bg-white  hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary"
-                                >
-                                    Small
-                                </Label>
 
-                                <div>
-                                    <RadioGroupItem
-                                        aria-label="Thick"
-                                        className="peer sr-only"
-                                        value="thick"
-                                        id="thick"
-                                    />
-                                    <Label
-                                        htmlFor={"thick"}
-                                        className="flex  p-2 flex-col items-center justify-between rounded-md border-2 bg-white  hover:bg-accent hover:text-accent-foreground peer-data-[state=checked]:border-primary [&:has([data-state=checked])]:border-primary"
-                                    >
-                                        Medium
-                                    </Label>
-                                </div>
-                            </RadioGroup>
-                        </div> */}
                         {/* Toppings */}
+                        {/* TODO: Show topping according to flag in category like isTopping=true */}
                         <div className="">
                             <h1 className="my-4 font-sm">Extra Topping</h1>
-                            <ToppingList />
+                            <ToppingList isSelected={isSelected} chooseTopping={chooseTopping} />
                         </div>
                         {/* footer pricing and add to cart */}
-                        <div className="pt-2 flex mt-5 mb-0 items-center  justify-between">
-                            <span className=" font-bold ">$20.33</span>
-                            <Button className="rounded-full font-medium bg-primary">
+                        <div className="pt-2 flex mt-5 mb-0 items-center justify-between">
+                            <span className=" font-bold ">${totalPrice}</span>
+                            <Button
+                                disabled={hasProduct}
+                                onClick={() => handelCart(product)}
+                                className={cn(
+                                    "rounded-full hover:cursor-pointer font-medium bg-primary",
+                                    hasProduct && "bg-gray-400 hover:bg-gray-400"
+                                )}
+                            >
                                 <ShoppingBag />
                                 Add Cart
                             </Button>
+                            <DialogClose asChild>
+                                <Button
+                                    onClick={() => {
+                                        setChooseTopping([]);
+                                        setDialogOpen(false);
+                                    }}
+                                    className="bg-gray-200 cursor-pointer hover:!bg-gray-200"
+                                    type="button"
+                                    variant="ghost"
+                                >
+                                    Close
+                                </Button>
+                            </DialogClose>
                         </div>
                     </div>
                 </div>
             </DialogContent>
         </Dialog>
     );
-}
+};
+
+export default memo(ToppingBox);

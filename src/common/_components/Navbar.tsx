@@ -1,16 +1,9 @@
 import { Button } from "@/components/ui/button";
-import {
-    Select,
-    SelectContent,
-    SelectGroup,
-    SelectItem,
-    SelectLabel,
-    SelectTrigger,
-    SelectValue,
-} from "@/components/ui/select";
 import { Tenant, ResponseType } from "@/types";
-import { Phone, ShoppingBasket } from "lucide-react";
+import { Phone } from "lucide-react";
 import Link from "next/link";
+import CartSSR from "./CartSSR";
+import SelectRestaurant from "./SelectRestaurant";
 
 export default async function Navbar() {
     const response = await fetch(`${process.env.BACKEND_URL}/api/auth/tenants`, {
@@ -22,27 +15,13 @@ export default async function Navbar() {
     const { data: restaurants }: ResponseType<Tenant> = await response.json();
 
     return (
-        <header className=" ">
+        <header className=" h-16 ">
             <nav className=" py-4 container m-auto flex items-center justify-between ">
-                {/* right side secion */}
+                {/* right side section */}
                 <section className="flex space-x-4">
                     <span className="text-2xl font-bold">🍕 Pizza</span>
                     {/* select restaurant options */}
-                    <Select>
-                        <SelectTrigger className="w-[180px] ">
-                            <SelectValue placeholder="Select a Restaurant" />
-                        </SelectTrigger>
-                        <SelectContent className="">
-                            <SelectGroup className=" ">
-                                <SelectLabel>Restaurants</SelectLabel>
-                                {restaurants?.map((tenant) => (
-                                    <SelectItem key={tenant.id} value={String(tenant.id)}>
-                                        {tenant.name}
-                                    </SelectItem>
-                                ))}
-                            </SelectGroup>
-                        </SelectContent>
-                    </Select>
+                    <SelectRestaurant restaurants={restaurants} />
                 </section>
                 {/* left side section */}
                 <section className="text-sm">
@@ -57,14 +36,8 @@ export default async function Navbar() {
                                 </li>
                             </ul>
                         </div>
-                        <div className=" relative mr-4">
-                            <Link href={"/"}>
-                                <ShoppingBasket />
-                            </Link>
-                            <span className="w-6 h-6 font-medium absolute flex -top-4 -right-5 text-white  items-center  justify-center bg-orange-500 rounded-full">
-                                8
-                            </span>
-                        </div>
+                        {/* cart count place here */}
+                        <CartSSR />
                         <div className="flex justify-center items-center font-medium gap-1">
                             <Phone />
                             <span>+48 129212139</span>

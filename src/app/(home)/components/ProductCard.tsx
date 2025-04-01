@@ -2,25 +2,25 @@ import Image from "next/image";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import ToppingBox from "./ToppingBox";
 import { Product, ResponseType } from "@/types";
+import { miniMumPrice } from "@/lib/utils";
+import { FilterProps } from "../page";
 
 // This function is used to delay the fetch request as testing purpose
 const delayFetch = (url: string, delay = 3000) => {
     return new Promise((resolve) => {
         setTimeout(async () => {
             const response = await fetch(url, {
-                next: {
-                    revalidate: 60 * 60,
-                },
+                cache: "no-store",
             });
             resolve(response);
         }, delay);
     });
 };
 
-export default async function ProductCard() {
+export default async function ProductCard({ searchParams }: FilterProps) {
     const response = await delayFetch(
-        `${process.env.BACKEND_URL}/api/catalog/product?limit=10&tenantId=7`,
-        100
+        `${process.env.BACKEND_URL}/api/catalog/product?limit=10&tenantId=${searchParams.restaurant}`,
+        0
     );
     if (!(response as Response).ok) {
         throw new Error("Product is not able to fetch");
@@ -30,7 +30,7 @@ export default async function ProductCard() {
 
     return (
         <div className="grid  w-max m-auto grid-cols-4 gap-y-6 gap-x-6 justify-items-center py-8      ">
-            {productResponse.map((product) => (
+            {productResponse?.map((product) => (
                 <section key={product._id} className="w-64 h-80">
                     <Card className=" text-black h-full overflow-hidden rounded-lg shadow-white  border-0">
                         <div className=" overflow-auto">
@@ -55,7 +55,10 @@ export default async function ProductCard() {
 
                             <CardFooter>
                                 <div className="flex justify-between items-center w-[240px] m-auto">
-                                    <span>From ${1000}</span>
+                                    <span>
+                                        From $
+                                        <span className="font-bold">{miniMumPrice(product)}</span>
+                                    </span>
                                     <ToppingBox product={product} />
                                 </div>
                             </CardFooter>
