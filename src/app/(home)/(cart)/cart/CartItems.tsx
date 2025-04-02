@@ -3,11 +3,13 @@ import { Card } from "@/components/ui/card";
 import Image from "next/image";
 import QtyButtons from "./QtyButtons";
 import React from "react";
-import { CartSlice } from "@/store/cart/cartSlice";
+import { CartSlice, increaseQty } from "@/store/cart/cartSlice";
 import useTotal from "@/hooks/useTotal";
+import { useAppDispatch } from "@/store/hooks";
 
 export default function CartItems({ item }: { item: CartSlice }) {
     const total = useTotal(item);
+    const dispatch = useAppDispatch();
     return (
         <>
             <Card
@@ -45,7 +47,14 @@ export default function CartItems({ item }: { item: CartSlice }) {
 
                     <div className=" w-[80px]  flex items-center gap-3">
                         <span className="font-semibold ">${total * item.qty}</span>
-                        <span className="text-lg tracking-tighter  ">X</span>
+                        <span
+                            onClick={() =>
+                                dispatch(increaseQty({ hash: item.hash as string, qty: 0 }))
+                            }
+                            className="text-lg tracking-tighter  "
+                        >
+                            X
+                        </span>
                     </div>
                 </section>
                 <div className=" bg-gray-100 h-[1px] w-[700px] m-auto"></div>

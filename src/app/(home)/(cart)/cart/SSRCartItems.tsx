@@ -8,6 +8,7 @@ import { makeTotalUtility } from "@/lib/utils";
 export default function SSRCartItems() {
     const [client, setClient] = useState(false);
     const state = useAppSelector((state) => state.cart.cart);
+
     const finalTotal = useMemo(() => {
         return state.reduce((acc, item) => {
             return acc + item.qty * makeTotalUtility(item);
@@ -19,7 +20,7 @@ export default function SSRCartItems() {
     }, []);
 
     if (!client) return;
-
+    if (!state.length) return <h1>Your Cart it empty</h1>;
     return (
         <>
             {state.map((item) => (

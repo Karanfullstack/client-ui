@@ -1,7 +1,5 @@
 import { Card } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
 import SSRCartItems from "./SSRCartItems";
-import { Suspense } from "react";
 
 export default function CartPage() {
     return (
@@ -11,13 +9,7 @@ export default function CartPage() {
 
                 <Card className="mt-5 border-0 shadow-none flex flex-col">
                     {/* cart titems */}
-                    <Suspense fallback={"loading..."}>
-                        <SSRCartItems />
-                    </Suspense>
-                    {/* <div className="flex justify-between items-center px-5">
-                        <h2 className="text-lg font-bold">${2300}</h2>
-                        <Button>Chckout</Button>
-                    </div> */}
+                    <SSRCartItems />
                 </Card>
             </div>
         </div>
