@@ -8,6 +8,7 @@ export interface CartSlice {
     config: { [key: string]: string };
     toppings: ToppingType[];
     hash?: string;
+    qty: number;
 }
 
 export interface CartState {
@@ -21,11 +22,12 @@ export const cartSlice = createSlice({
     initialState,
     reducers: {
         addToCart: (state, action) => {
-            const hash = myHasString({ ...action.payload });
+            const hash = myHasString({ ...action.payload, qty: undefined });
             const paylaod = {
                 product: action.payload.product,
                 config: action.payload.config,
                 toppings: action.payload.toppings,
+                qty: 1,
                 hash,
             };
             window.localStorage.setItem("items", JSON.stringify([...state.cart, paylaod]));
@@ -36,9 +38,20 @@ export const cartSlice = createSlice({
         persistData: (state, action: PayloadAction<CartSlice[]>) => {
             state.cart.push(...action.payload);
         },
+        increaseQty: (state, action: PayloadAction<{ hash: string; qty: number }>) => {
+            const index = state.cart.findIndex((item) => item.hash === action.payload.hash);
+            // remove cart if passes zero
+            if (action.payload.qty === 0) {
+                state.cart.splice(index, 1);
+                window.localStorage.setItem("items", JSON.stringify(state.cart));
+                return;
+            }
+            state.cart[index].qty = Math.max(1, state.cart[index].qty + action.payload.qty);
+            window.localStorage.setItem("items", JSON.stringify(state.cart));
+        },
     },
 });
 
 // Action creators are generated for each case reducer function
-export const { addToCart, persistData } = cartSlice.actions;
+export const { addToCart, persistData, increaseQty } = cartSlice.actions;
 export default cartSlice.reducer;

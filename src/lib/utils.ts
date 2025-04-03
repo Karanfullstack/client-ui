@@ -9,7 +9,7 @@ export function cn(...inputs: ClassValue[]) {
 }
 
 export function myHasString(payload: CartSlice) {
-    const jsonString = JSON.stringify(payload);
+    const jsonString = JSON.stringify({ ...payload, qty: undefined });
     return crypto.createHash("sha256").update(jsonString).digest("hex");
 }
 
@@ -31,3 +31,17 @@ export function miniMumPrice(product: Product) {
     const MiniMumPrice = Math.min(...values);
     return MiniMumPrice;
 }
+
+export const makeTotalUtility = (cart: CartSlice) => {
+    const toppinPrice = cart.toppings.reduce((acc, current) => {
+        return acc + current.price;
+    }, 0);
+    const productPrice = Object.entries(cart.config)
+        .map(([key, value]) => {
+            const price = cart.product.priceConfiguration[key].avialableOptions[value];
+            return Number(price);
+        })
+        .reduce((acc, curr) => acc + curr, 0);
+
+    return toppinPrice + productPrice;
+};

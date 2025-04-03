@@ -21,7 +21,7 @@ export default function RootLayout({
     children: React.ReactNode;
 }>) {
     return (
-        <html lang="en">
+        <html lang="en" suppressHydrationWarning={true} data-qb-installed="true">
             <StoreProvider>
                 <body className={cn(`antialiased`, manrope.variable)}>
                     <Navbar />
