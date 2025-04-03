@@ -18,11 +18,14 @@ export default async function Navbar() {
         <header className=" h-16 ">
             <nav className=" py-4 container m-auto flex items-center justify-between ">
                 {/* right side section */}
-                <section className="flex space-x-4">
-                    <span className="text-2xl font-bold">🍕 Pizza</span>
-                    {/* select restaurant options */}
-                    <SelectRestaurant restaurants={restaurants} />
-                </section>
+
+                <Link href={"/"}>
+                    <section className="flex space-x-4">
+                        <span className="text-2xl font-bold">🍕 Pizza</span>
+                        {/* select restaurant options */}
+                        <SelectRestaurant restaurants={restaurants} />
+                    </section>
+                </Link>
                 {/* left side section */}
                 <section className="text-sm">
                     <div className="flex items-center gap-3 font-medium">

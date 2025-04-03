@@ -5,27 +5,21 @@ import { Product, ResponseType } from "@/types";
 import { miniMumPrice } from "@/lib/utils";
 import { FilterProps } from "../page";
 
-// This function is used to delay the fetch request as testing purpose
-const delayFetch = (url: string, delay = 3000) => {
-    return new Promise((resolve) => {
-        setTimeout(async () => {
-            const response = await fetch(url, {
-                cache: "no-store",
-            });
-            resolve(response);
-        }, delay);
-    });
-};
+// FIXME:  fetch based on all restaurant dynamically
 
 export default async function ProductCard({ searchParams }: FilterProps) {
-    const response = await delayFetch(
+    const response = await fetch(
         `${process.env.BACKEND_URL}/api/catalog/product?limit=10&tenantId=${searchParams.restaurant}`,
-        0
+        {
+            cache: "no-store",
+        }
     );
+
     if (!(response as Response).ok) {
         throw new Error("Product is not able to fetch");
     }
     const responseData = await (response as Response).json();
+    console.log("respone", responseData);
     const { data: productResponse }: ResponseType<Product> = responseData;
 
     return (
