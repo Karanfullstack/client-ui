@@ -5,6 +5,8 @@ import { Input } from "@/components/ui/input";
 import { FormProvider, useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
+import login, { ResponseTypeAction } from "../action/login";
+import { useState } from "react";
 
 const loginSchema = z.object({
     email: z.string().email({ message: "Please enter a valid email" }),
@@ -14,6 +16,7 @@ const loginSchema = z.object({
 type LoginType = z.infer<typeof loginSchema>;
 
 export default function LoginPage() {
+    const [isLoading, setIsLoading] = useState(false);
     const form = useForm<LoginType>({
         resolver: zodResolver(loginSchema),
         defaultValues: {
@@ -22,8 +25,20 @@ export default function LoginPage() {
         },
     });
 
-    const onSubmit = (data: LoginType) => {
-        console.log(data);
+    const onSubmit = async (data: LoginType) => {
+        setIsLoading(true);
+        try {
+            const payload = new FormData();
+            Object.entries(data).forEach(([Key, value]) => {
+                payload.append(Key, value);
+            });
+            const response: Partial<ResponseTypeAction> = await login(payload);
+            console.log(response.data);
+        } catch (error) {
+            console.log("error...", error);
+        } finally {
+            setIsLoading(false);
+        }
     };
     return (
         <main className="bg-gray-50 h-screen w-screen flex items-baseline  justify-center">
@@ -78,7 +93,9 @@ export default function LoginPage() {
                                     )}
                                 />
                                 <div className="flex  items-center justify-end">
-                                    <Button type="submit">Login</Button>
+                                    <Button disabled={isLoading} type="submit">
+                                        Login
+                                    </Button>
                                 </div>
                             </form>
                         </FormProvider>
