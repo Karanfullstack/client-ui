@@ -17,7 +17,7 @@ export default function Home({ searchParams }: FilterProps) {
             <Toaster expand={false} richColors position="top-center" />
             <div className="flex container m-auto justify-between items-center h-[400px] ">
                 <section className=" flex flex-col justify-center ">
-                    <h1 className="text-7xl font-black font-sans ">
+                    <h1 className="text-5xl font-black  font-sans ">
                         Super Delecious Pizza
                         <br />
                         <span className="text-primary">Only 50 mins</span>
@@ -30,7 +30,7 @@ export default function Home({ searchParams }: FilterProps) {
                     </div>
                 </section>
                 <section className=" flex flex-col justify-center  items-center">
-                    <Image src={PizzaBanner} height={400} width={400} alt="Pizza_banner" />
+                    <Image src={PizzaBanner} height={320} width={320} alt="Pizza_banner" />
                 </section>
             </div>
             {/* tabs */}

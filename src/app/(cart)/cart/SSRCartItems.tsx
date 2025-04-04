@@ -4,11 +4,12 @@ import CartItems from "./CartItems";
 import { useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { makeTotalUtility } from "@/lib/utils";
+import { useRouter } from "next/navigation";
 
 export default function SSRCartItems() {
     const [client, setClient] = useState(false);
     const state = useAppSelector((state) => state.cart.cart);
-
+    const router = useRouter();
     const finalTotal = useMemo(() => {
         return state.reduce((acc, item) => {
             return acc + item.qty * makeTotalUtility(item);
@@ -29,7 +30,7 @@ export default function SSRCartItems() {
 
             <div className="flex justify-between items-center px-5">
                 <h2 className="text-lg font-bold">${finalTotal}</h2>
-                <Button>Chckout</Button>
+                <Button className="cursor-pointer" onClick={() => router.push("/checkout")}>Chckout</Button>
             </div>
         </>
     );
