@@ -8,7 +8,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 const loginSchema = z.object({
     email: z.string().email({ message: "Please enter a valid email" }),
-    password: z.string(),
+    password: z.string().min(4, { message: "Password must be at least 4 characters long" }),
 });
 
 type LoginType = z.infer<typeof loginSchema>;
@@ -30,7 +30,7 @@ export default function LoginPage() {
             <div className="w-full max-w-[400px] h-full max-h-[400px] mt-20  flex items-center justify-center bg-white rounded-lg ">
                 <div className="flex w-full space-y-1.5 justify-center items-center  flex-col">
                     <div className="flex flex-col justify-center gap-2 items-center ">
-                        <h1 className="text-2xl font-medium">Login</h1>
+                        <h1 className="text-2xl font-medium">🍕 Login</h1>
                         <p className="text-sm text-gray-400">
                             You need to login to access the website.
                         </p>
@@ -77,7 +77,9 @@ export default function LoginPage() {
                                         </>
                                     )}
                                 />
-                                <Button type="submit">Login</Button>
+                                <div className="flex  items-center justify-end">
+                                    <Button type="submit">Login</Button>
+                                </div>
                             </form>
                         </FormProvider>
                     </div>
