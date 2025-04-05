@@ -67,7 +67,7 @@ export default async function login(data: FormData) {
         for (const [key, value] of Object.entries(parsedCookies)) {
             cookieStore.set({
                 name: key,
-                value: value.value!,
+                value: value[key]!,
                 path: value.Path,
                 expires: new Date(value.Expires as string),
                 // need to verify if in auth service httpOnly true or not

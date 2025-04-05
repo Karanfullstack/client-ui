@@ -7,7 +7,9 @@ import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 import login, { ResponseTypeAction } from "../action/login";
 import { useState } from "react";
+import { LoaderIcon } from "lucide-react";
 
+// TODO: SHOW ERROR MESSAGE
 const loginSchema = z.object({
     email: z.string().email({ message: "Please enter a valid email" }),
     password: z.string().min(4, { message: "Password must be at least 4 characters long" }),
@@ -16,7 +18,12 @@ const loginSchema = z.object({
 type LoginType = z.infer<typeof loginSchema>;
 
 export default function LoginPage() {
-    const [isLoading, setIsLoading] = useState(false);
+    const [status, setStatus] = useState({
+        loading: false,
+        error: "",
+        isAuth: false,
+    });
+
     const form = useForm<LoginType>({
         resolver: zodResolver(loginSchema),
         defaultValues: {
@@ -24,20 +31,29 @@ export default function LoginPage() {
             password: "",
         },
     });
+    // if (status.isAuth) {
+    //     window.location.replace("/");
+    //     return null;
+    // }
 
     const onSubmit = async (data: LoginType) => {
-        setIsLoading(true);
+        setStatus((prev) => ({ ...prev, loading: true }));
         try {
             const payload = new FormData();
             Object.entries(data).forEach(([Key, value]) => {
                 payload.append(Key, value);
             });
             const response: Partial<ResponseTypeAction> = await login(payload);
-            console.log(response.data);
+            setStatus((prev) => ({
+                ...prev,
+                loading: false,
+                isAuth: response.isAuthenticated as boolean,
+                error: response.error ?? "",
+            }));
         } catch (error) {
             console.log("error...", error);
         } finally {
-            setIsLoading(false);
+            setStatus((prev) => ({ ...prev, loading: false }));
         }
     };
     return (
@@ -47,7 +63,11 @@ export default function LoginPage() {
                     <div className="flex flex-col justify-center gap-2 items-center ">
                         <h1 className="text-2xl font-medium">🍕 Login</h1>
                         <p className="text-sm text-gray-400">
-                            You need to login to access the website.
+                            {status.error ? (
+                                <span className="text-red-300">{status.error}</span>
+                            ) : (
+                                "You need to login to access the website."
+                            )}
                         </p>
                     </div>
                     {/* Form */}
@@ -92,8 +112,13 @@ export default function LoginPage() {
                                         </>
                                     )}
                                 />
-                                <div className="flex  items-center justify-end">
-                                    <Button disabled={isLoading} type="submit">
+                                <div className="w-full">
+                                    <Button
+                                        className="w-full"
+                                        disabled={status.loading}
+                                        type="submit"
+                                    >
+                                        {status.loading && <LoaderIcon className=" animate-spin" />}
                                         Login
                                     </Button>
                                 </div>
