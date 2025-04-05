@@ -5,6 +5,7 @@ import Link from "next/link";
 import CartSSR from "./CartSSR";
 import SelectRestaurant from "./SelectRestaurant";
 import { UserSession } from "@/lib/session";
+import Logout from "./Logout";
 
 export default async function Navbar() {
     const session = await UserSession();
@@ -49,9 +50,13 @@ export default async function Navbar() {
                             <span>+48 129212139</span>
                         </div>
                         <div>
-                            <Button className=" hover:cursor-pointer">
-                                {session?.user ? "Logout" : "Login"}
-                            </Button>
+                            {session?.user ? (
+                                <Logout />
+                            ) : (
+                                <Button className=" hover:cursor-pointer" asChild>
+                                    <Link href={"/login"}>Login</Link>
+                                </Button>
+                            )}
                         </div>
                     </div>
                 </section>

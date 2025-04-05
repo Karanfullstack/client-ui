@@ -3,7 +3,7 @@ import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
 import ToppingBox from "./ToppingBox";
 import { Product, ResponseType } from "@/types";
 import { miniMumPrice } from "@/lib/utils";
-import { FilterProps } from "../page";
+import { FilterProps } from "../../page";
 
 // FIXME:  fetch based on all restaurant dynamically
 

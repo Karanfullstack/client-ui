@@ -5,8 +5,8 @@ import { Input } from "@/components/ui/input";
 import { FormProvider, useForm } from "react-hook-form";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
-import login, { ResponseTypeAction } from "../action/login";
-import { useState } from "react";
+import login, { ResponseTypeAction } from "../../action/login";
+import { useEffect, useState } from "react";
 import { LoaderIcon } from "lucide-react";
 
 // TODO: SHOW ERROR MESSAGE
@@ -31,6 +31,7 @@ export default function LoginPage() {
             password: "",
         },
     });
+
     // if (status.isAuth) {
     //     window.location.replace("/");
     //     return null;
@@ -50,12 +51,20 @@ export default function LoginPage() {
                 isAuth: response.isAuthenticated as boolean,
                 error: response.error ?? "",
             }));
+            if (response.isAuthenticated) {
+                window.location.replace("/");
+            }
         } catch (error) {
             console.log("error...", error);
         } finally {
             setStatus((prev) => ({ ...prev, loading: false }));
         }
     };
+    const [client, setClient] = useState(false);
+    useEffect(() => {
+        setClient(true);
+    }, []);
+    if (!client) return null;
     return (
         <main className="bg-gray-50 h-screen w-screen flex items-baseline  justify-center">
             <div className="w-full max-w-[400px] h-full max-h-[400px] mt-20  flex items-center justify-center bg-white rounded-lg ">

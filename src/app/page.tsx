@@ -1,10 +1,10 @@
 import Image from "next/image";
-import PizzaBanner from "../../app/../../assets/heor.png";
+import PizzaBanner from "@/../assets/heor.png";
 import { Button } from "@/components/ui/button";
-import ProductCard from "./components/ProductCard";
-import Tab from "./components/Tab";
+import ProductCard from "./(home)/components/ProductCard";
+import Tab from "./(home)/components/Tab";
 import { Suspense } from "react";
-import { CardSkeleton } from "./components/CardSkeleton";
+import { CardSkeleton } from "./(home)/components/CardSkeleton";
 import { Toaster } from "sonner";
 export interface FilterProps {
     searchParams: {
