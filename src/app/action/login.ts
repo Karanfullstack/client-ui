@@ -9,6 +9,7 @@ export interface ResponseTypeAction {
     error: string | null;
     isAuthenticated: boolean;
 }
+export type TokenType = { accessToken?: string; refreshToken?: string };
 export default async function login(data: FormData) {
     const email = data.get("email");
     const password = data.get("password");
@@ -39,7 +40,7 @@ export default async function login(data: FormData) {
         const c = response.headers.getSetCookie();
 
         // extract tokesn from cookies
-        type TokenType = { accessToken?: string; refreshToken?: string };
+
         const { accessToken, refreshToken } = c.reduce((token, cookie) => {
             if (cookie.includes("accessToken")) token.accessToken = cookie;
             if (cookie.includes("refreshToken")) token.refreshToken = cookie;
