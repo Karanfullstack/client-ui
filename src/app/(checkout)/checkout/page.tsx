@@ -4,8 +4,23 @@ import Address from "./Address";
 import Payment from "./Payment";
 import { Textarea } from "@/components/ui/textarea";
 import OrderSummary from "./OrderSummary";
+import { UserSession } from "@/lib/session";
+import { redirect } from "next/navigation";
 
-export default function page() {
+export default async function Checkout({ searchParams }: { searchParams: { restaurant: string } }) {
+    const searchQuery = Object.entries(searchParams).reduce((acc, [key, value]) => {
+        if (typeof value === "string") {
+            acc[key] = value;
+        }
+        return acc;
+    }, {} as Record<string, string>);
+
+    const searchFilter = new URLSearchParams(searchQuery);
+    searchFilter.set("returnTo", "checkout");
+    const session = await UserSession();
+    if (!session?.user) {
+        redirect(`/login?${searchFilter}`);
+    }
     return (
         <div className="bg-[#f9f9f7] w-full flex flex-col h-[calc(100vh-64px)]">
             <div className="container  m-auto max-w-[850px] mt-10">

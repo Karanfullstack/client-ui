@@ -2,8 +2,9 @@ import type { Metadata } from "next";
 import { Manrope } from "next/font/google";
 import "./globals.css";
 import { cn } from "@/lib/utils";
-import Navbar from "@/common/_components/Navbar";
 import StoreProvider from "@/store/StoreProvider";
+import Navbar from "@/common/_components/Navbar";
+import RefreshToken from "@/common/_components/RefreshToken";
 
 const manrope = Manrope({
     variable: "--font-manrope",
@@ -24,8 +25,10 @@ export default function RootLayout({
         <html lang="en" suppressHydrationWarning={true} data-qb-installed="true">
             <StoreProvider>
                 <body className={cn(`antialiased`, manrope.variable)}>
-                    <Navbar />
-                    <main>{children}</main>
+                    <RefreshToken>
+                        <Navbar />
+                        <main>{children}</main>
+                    </RefreshToken>
                 </body>
             </StoreProvider>
         </html>

@@ -20,7 +20,7 @@ export default function Address() {
                 <span>Address</span>
                 <Dialog>
                     <DialogTrigger asChild>
-                        <Button variant="link" color="text-primary">
+                        <Button variant="link" color="text-primaryf">
                             + Add your new addreess
                         </Button>
                     </DialogTrigger>

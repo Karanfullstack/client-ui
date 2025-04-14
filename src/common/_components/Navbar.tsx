@@ -4,8 +4,12 @@ import { Phone } from "lucide-react";
 import Link from "next/link";
 import CartSSR from "./CartSSR";
 import SelectRestaurant from "./SelectRestaurant";
+import { UserSession } from "@/lib/session";
+import Logout from "./Logout";
 
 export default async function Navbar() {
+    const session = await UserSession();
+
     const response = await fetch(`${process.env.BACKEND_URL}/api/auth/tenants`, {
         next: {
             revalidate: 60 * 60, // 1 hour
@@ -46,7 +50,13 @@ export default async function Navbar() {
                             <span>+48 129212139</span>
                         </div>
                         <div>
-                            <Button className=" hover:cursor-pointer">Logout</Button>
+                            {session?.user ? (
+                                <Logout />
+                            ) : (
+                                <Button className=" hover:cursor-pointer" asChild>
+                                    <Link href={"/login"}>Login</Link>
+                                </Button>
+                            )}
                         </div>
                     </div>
                 </section>
