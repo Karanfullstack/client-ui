@@ -8,6 +8,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import login, { ResponseTypeAction } from "../../action/login";
 import { useEffect, useState } from "react";
 import { LoaderIcon } from "lucide-react";
+import { useSearchParams } from "next/navigation";
 
 // TODO: SHOW ERROR MESSAGE
 const loginSchema = z.object({
@@ -18,6 +19,11 @@ const loginSchema = z.object({
 type LoginType = z.infer<typeof loginSchema>;
 
 export default function LoginPage() {
+    const searchParams = useSearchParams();
+    const querySearch = new URLSearchParams(searchParams);
+    const returnTo = searchParams.get("returnTo");
+
+    querySearch.delete("returnTo");
     const [status, setStatus] = useState({
         loading: false,
         error: "",
@@ -48,11 +54,17 @@ export default function LoginPage() {
             setStatus((prev) => ({
                 ...prev,
                 loading: false,
-                isAuth: response.isAuthenticated as boolean,
-                error: response.error ?? "",
+                isAuth: response?.isAuthenticated as boolean,
+                error: response?.error ?? "",
             }));
-            if (response.isAuthenticated) {
-                window.location.replace("/");
+            if (response?.isAuthenticated) {
+                if (!returnTo) {
+                    window.location.replace("/");
+                    return;
+                } else {
+                    window.location.replace(`/${returnTo}?${querySearch}`);
+                    return;
+                }
             }
         } catch (error) {
             console.log("error...", error);
