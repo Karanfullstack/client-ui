@@ -4,9 +4,12 @@ import CartItems from "./CartItems";
 import { useEffect, useMemo, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { makeTotalUtility } from "@/lib/utils";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 export default function SSRCartItems() {
+    const query = useSearchParams();
+    const searchQuery = new URLSearchParams(query.toString());
+
     const [client, setClient] = useState(false);
     const state = useAppSelector((state) => state.cart.cart);
     const router = useRouter();
@@ -30,7 +33,12 @@ export default function SSRCartItems() {
 
             <div className="flex justify-between items-center px-5">
                 <h2 className="text-lg font-bold">${finalTotal}</h2>
-                <Button className="cursor-pointer" onClick={() => router.push("/checkout")}>Chckout</Button>
+                <Button
+                    className="cursor-pointer"
+                    onClick={() => router.push("/checkout" + `?${searchQuery}`)}
+                >
+                    Chckout
+                </Button>
             </div>
         </>
     );

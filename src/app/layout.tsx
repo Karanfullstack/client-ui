@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils";
 import StoreProvider from "@/store/StoreProvider";
 import Navbar from "@/common/_components/Navbar";
 import RefreshToken from "@/common/_components/RefreshToken";
+import QueryProvider from "./QueryProvider";
 
 const manrope = Manrope({
     variable: "--font-manrope",
@@ -25,10 +26,12 @@ export default function RootLayout({
         <html lang="en" suppressHydrationWarning={true} data-qb-installed="true">
             <StoreProvider>
                 <body className={cn(`antialiased`, manrope.variable)}>
-                    <RefreshToken>
-                        <Navbar />
-                        <main>{children}</main>
-                    </RefreshToken>
+                    <QueryProvider>
+                        <RefreshToken>
+                            <Navbar />
+                            <main>{children}</main>
+                        </RefreshToken>
+                    </QueryProvider>
                 </body>
             </StoreProvider>
         </html>
