@@ -62,3 +62,17 @@ export interface ResponseType<T> {
     data?: T[];
     docs: T[];
 }
+
+export interface CustomerI {
+    customer: {
+        _id: string;
+        userId: string;
+        firstName: string;
+        lastName: string;
+        email: string;
+        addresses: [];
+        createdAt: string;
+        updatedAt: string;
+        __v: number;
+    };
+}

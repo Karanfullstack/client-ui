@@ -1,5 +1,5 @@
 "use client";
-
+import { useQuery } from "@tanstack/react-query";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
@@ -7,8 +7,15 @@ import React from "react";
 import Address from "./Address";
 import OrderSummary from "./OrderSummary";
 import Payment from "./Payment";
+import { getCustomer } from "@/http";
+import { CustomerI } from "@/types";
 
 export default function Form() {
+    const { data } = useQuery<CustomerI>({
+        queryKey: ["customer"],
+        queryFn: getCustomer,
+    });
+    console.log(data);
     return (
         <div className="bg-[#f9f9f7] w-full flex flex-col h-[calc(100vh-64px)]">
             <div className="container  m-auto max-w-[850px] mt-10">
@@ -22,19 +29,37 @@ export default function Form() {
                                 <Label className="text-xs" htmlFor="email">
                                     First Name
                                 </Label>
-                                <Input className="bg-accent  " type="email" id="email" />
+                                <Input
+                                    disabled
+                                    defaultValue={data?.customer.firstName}
+                                    className="bg-accent  "
+                                    type="email"
+                                    id="email"
+                                />
                             </div>
                             <div className="flex flex-col gap-1 mt-4">
                                 <Label className="text-xs" htmlFor="email">
                                     Last Name
                                 </Label>
-                                <Input className="bg-accent" type="email" id="email" />
+                                <Input
+                                    disabled
+                                    defaultValue={data?.customer.lastName}
+                                    className="bg-accent"
+                                    type="email"
+                                    id="email"
+                                />
                             </div>
                             <div className="flex flex-col gap-1 mt-4">
                                 <Label className="text-xs" htmlFor="email">
                                     Email
                                 </Label>
-                                <Input className="bg-accent" type="email" id="email" />
+                                <Input
+                                    disabled
+                                    defaultValue={data?.customer.email}
+                                    className="bg-accent"
+                                    type="email"
+                                    id="email"
+                                />
                             </div>
                         </div>
                         <Address />
