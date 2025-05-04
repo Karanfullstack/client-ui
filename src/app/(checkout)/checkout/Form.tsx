@@ -62,7 +62,8 @@ export default function Form() {
                                 />
                             </div>
                         </div>
-                        <Address />
+
+                        {data?.customer && <Address customer={data?.customer} />}
                         <Payment />
                         <div className="mt-5">
                             <Textarea placeholder="Type your message here." />

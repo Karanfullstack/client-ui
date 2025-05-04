@@ -70,7 +70,7 @@ export interface CustomerI {
         firstName: string;
         lastName: string;
         email: string;
-        addresses: [];
+        addresses: { text: string; isDefault: boolean; _id: string }[];
         createdAt: string;
         updatedAt: string;
         __v: number;

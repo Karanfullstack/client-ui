@@ -11,8 +11,9 @@ import {
 import { Label } from "@/components/ui/label";
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { Textarea } from "@/components/ui/textarea";
+import { CustomerI } from "@/types";
 
-export default function Address() {
+export default function Address({ customer }: CustomerI) {
     return (
         <section className="mt-5">
             {/* address title */}
@@ -43,19 +44,28 @@ export default function Address() {
                 </Dialog>
             </div>
             <div className="mt-4">
-                <RadioGroup className="grid grid-cols-2 gap-6" defaultValue="comfortable">
-                    <Card className="flex px-2  items-center shadow-none rounded-sm space-x-2">
-                        <div className="flex items-center space-x-2">
-                            <RadioGroupItem value="new" id="r2" />
-                            <Label htmlFor="r2">new street 234 hosue avenu</Label>
-                        </div>
-                    </Card>
-                    <Card className="flex items-center px-2  rounded-sm  shadow-none  gap-2">
+                <RadioGroup
+                    onValueChange={(value) => console.log(value)}
+                    className="grid grid-cols-2 gap-6"
+                >
+                    {customer.addresses.map((address) => (
+                        <Card
+                            key={address._id}
+                            className="flex px-2  items-center shadow-none rounded-sm space-x-2"
+                        >
+                            <div className="flex items-center space-x-2">
+                                <RadioGroupItem value={address.text} id={address._id} />
+                                <Label htmlFor="r2">{address.text}</Label>
+                            </div>
+                        </Card>
+                    ))}
+
+                    {/* <Card className="flex items-center px-2  rounded-sm  shadow-none  gap-2">
                         <div className="flex items-center space-x-2">
                             <RadioGroupItem value="default" id="r1" />
                             <Label htmlFor="r1">Poland,ulica 14 poznan</Label>
                         </div>
-                    </Card>
+                    </Card> */}
                 </RadioGroup>
             </div>
         </section>
