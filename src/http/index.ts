@@ -11,7 +11,22 @@ export const apiInstance = axios.create({
 });
 
 const GETUSTOMER = "/api/order/customer";
+const ADDADRESS = "/api/order/customer/address";
+const REMOVEADDRESS = "/api/order/customer/address-remove";
 export const getCustomer = async () =>
     await apiInstance.get<CustomerI>(GETUSTOMER).then((res) => {
         return { customer: res.data.customer };
     });
+
+export const addAddress = (id: string, text: string) => {
+    return apiInstance.patch(`${ADDADRESS}/${id}`, {
+        text,
+    });
+};
+
+export const removeAddress = (customerId: string, addressId: string) => {
+    return apiInstance.patch(REMOVEADDRESS, {
+        customerId,
+        addressId,
+    });
+};
