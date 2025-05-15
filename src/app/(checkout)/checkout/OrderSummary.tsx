@@ -35,7 +35,9 @@ export default function OrderSummary() {
                     </div>
                 </div>
                 <div className="flex justify-end mt-2  items-center">
-                    <Button size={"sm"}>Place order</Button>
+                    <Button className=" cursor-pointer" type="submit" size={"sm"}>
+                        Place order
+                    </Button>
                 </div>
             </section>
         </div>

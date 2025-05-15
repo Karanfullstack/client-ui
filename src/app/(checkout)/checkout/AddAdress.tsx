@@ -17,7 +17,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { addAddress } from "@/http";
-import { useState } from "react";
+import { FormEvent, useState } from "react";
 
 const formSchema = z.object({
     text: z.string().min(2, {
@@ -27,6 +27,7 @@ const formSchema = z.object({
 type formType = z.infer<typeof formSchema>;
 export default function AddAdress({ customerId }: { customerId: string }) {
     const [isOpen, setIsOpen] = useState(false);
+
     const form = useForm<formType>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -43,10 +44,12 @@ export default function AddAdress({ customerId }: { customerId: string }) {
         },
     });
 
-    const addressHandle = async (data: formType) => {
-        const result = await mutation.mutateAsync(data.text);
-        setIsOpen(false);
-        console.log(result);
+    const addressHandle = async (e: FormEvent<HTMLFormElement>) => {
+        e.stopPropagation();
+        return form.handleSubmit(async (data: formType) => {
+            await mutation.mutateAsync(data.text);
+            setIsOpen(false);
+        })(e);
     };
     return (
         <div className="w-full flex justify-end">
@@ -58,7 +61,7 @@ export default function AddAdress({ customerId }: { customerId: string }) {
                 </DialogTrigger>
                 <DialogContent className=" w-[350px] bg-accent">
                     <Form {...form}>
-                        <form onSubmit={form.handleSubmit(addressHandle)}>
+                        <form onSubmit={addressHandle}>
                             <DialogHeader>
                                 <DialogTitle>Address</DialogTitle>
                                 <DialogDescription className="mb-2">
